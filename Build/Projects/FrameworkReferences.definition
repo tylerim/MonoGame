@@ -84,6 +84,9 @@
       <Binary
         Name="SharpDX.XInput"
         Path="ThirdParty/Dependencies/SharpDX/Windows/SharpDX.XInput.dll" />
+		<Binary
+        Name="OpenTK"
+        Path="ThirdParty/Dependencies/OpenTK.dll" />
     </Service>
 
     <Service Name="MonoGame.Framework/OpenGLGraphics">
