@@ -310,6 +310,8 @@ namespace Microsoft.Xna.Framework
                     _view.Dispose();
                     _view = null;
                 }
+				
+                soundControllerInstance = null;
             }
 
 			base.Dispose(disposing);

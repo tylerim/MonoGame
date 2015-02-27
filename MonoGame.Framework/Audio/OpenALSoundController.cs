@@ -223,7 +223,7 @@ namespace Microsoft.Xna.Framework.Audio
 			}
 		}
 
-        public static void DestroyInstance()
+        private static void DestroyInstance()
         {
             if (_instance != null)
             {
@@ -291,6 +291,10 @@ namespace Microsoft.Xna.Framework.Audio
             {
                 if (disposing)
                 {
+                    // Since we only have singleton instance of OpenALSoundController,
+                    // We are allowed to shutdown controller when singleton instance is unreference
+                    DestroyInstance();
+
                     if (_bSoundAvailable)
                         CleanUpOpenAL();
                 }
