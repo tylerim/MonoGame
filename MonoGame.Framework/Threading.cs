@@ -68,7 +68,7 @@ namespace Microsoft.Xna.Framework
         public const int kMaxWaitForUIThread = 750; // In milliseconds
 
 #if !WINDOWS_PHONE
-        static int mainThreadId;
+        int mainThreadId;
 #endif
 
 #if ANDROID
@@ -77,12 +77,12 @@ namespace Microsoft.Xna.Framework
 #elif IOS
         public static EAGLContext BackgroundContext;
 #elif WINDOWS || LINUX || ANGLE
-        public static IGraphicsContext BackgroundContext;
-        public static IWindowInfo WindowInfo;
+        public IGraphicsContext BackgroundContext;
+        public IWindowInfo WindowInfo;
 #endif
 
 #if !WINDOWS_PHONE
-        static Threading()
+        public Threading()
         {
 #if WINDOWS_STOREAPP
             mainThreadId = Environment.CurrentManagedThreadId;
@@ -96,7 +96,7 @@ namespace Microsoft.Xna.Framework
         /// Checks if the code is currently running on the UI thread.
         /// </summary>
         /// <returns>true if the code is currently running on the UI thread.</returns>
-        public static bool IsOnUIThread()
+        public bool IsOnUIThread()
         {
 #if WINDOWS_PHONE
             return Deployment.Current.Dispatcher.CheckAccess();
@@ -111,7 +111,7 @@ namespace Microsoft.Xna.Framework
         /// Throws an exception if the code is not currently running on the UI thread.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the code is not currently running on the UI thread.</exception>
-        public static void EnsureUIThread()
+        public void EnsureUIThread()
         {
             if (!IsOnUIThread())
                 throw new InvalidOperationException("Operation not called on UI thread.");
@@ -152,7 +152,7 @@ namespace Microsoft.Xna.Framework
         /// If the current thread is the UI thread, the action will run immediately.
         /// </summary>
         /// <param name="action">The action to be run on the UI thread</param>
-        internal static void BlockOnUIThread(Action action)
+        internal void BlockOnUIThread(Action action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");

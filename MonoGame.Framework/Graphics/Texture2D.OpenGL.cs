@@ -53,7 +53,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             this.glTarget = TextureTarget.Texture2D;
             
-            Threading.BlockOnUIThread(() =>
+            GraphicsDevice.Threading.BlockOnUIThread(() =>
             {
                 // Store the current bound texture.
                 var prevTexture = GraphicsExtensions.GetBoundTexture2D();
@@ -107,7 +107,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformSetData<T>(int level, int arraySlice, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
         {
-            Threading.BlockOnUIThread(() =>
+            GraphicsDevice.Threading.BlockOnUIThread(() =>
             {
             var elementSizeInByte = Marshal.SizeOf(typeof(T));
             var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);

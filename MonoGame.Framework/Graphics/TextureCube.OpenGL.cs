@@ -20,7 +20,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             this.glTarget = TextureTarget.TextureCubeMap;
 
-            Threading.BlockOnUIThread(() =>
+            GraphicsDevice.Threading.BlockOnUIThread(() =>
             {
 			GL.GenTextures(1, out this.glTexture);
             GraphicsExtensions.CheckGLError();
@@ -87,7 +87,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformSetData<T>(CubeMapFace face, int level, IntPtr dataPtr, int xOffset, int yOffset, int width, int height)
         {
-            Threading.BlockOnUIThread(() =>
+            GraphicsDevice.Threading.BlockOnUIThread(() =>
             {
             GL.BindTexture(TextureTarget.TextureCubeMap, this.glTexture);
             GraphicsExtensions.CheckGLError();

@@ -63,7 +63,7 @@ namespace Microsoft.Xna.Framework.Graphics
             if (!IsDisposed)
             {
 #if OPENGL
-                Threading.BlockOnUIThread(() =>
+				GraphicsDevice.Threading.BlockOnUIThread(() =>
                 {
                     GL.DeleteQueries(1, ref glQueryId);
                     GraphicsExtensions.CheckGLError();

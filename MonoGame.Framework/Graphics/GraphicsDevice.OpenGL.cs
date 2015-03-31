@@ -45,7 +45,13 @@ namespace Microsoft.Xna.Framework.Graphics
         static List<Action> disposeActions = new List<Action>();
         static object disposeActionsLock = new object();
 
-        private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
+	    private Threading _threading = new Threading();
+	    internal Threading Threading
+	    {
+		    get { return _threading; }
+	    }
+
+	    private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
 
         private ShaderProgram _shaderProgram = null;
 
@@ -324,7 +330,7 @@ namespace Microsoft.Xna.Framework.Graphics
             // Free all the cached shader programs.
             _programCache.Dispose();
 
-            GraphicsDevice.AddDisposeAction(() =>
+            AddDisposeAction(() =>
                                             {
 #if WINDOWS || LINUX || ANGLE
                 Context.Dispose();
@@ -345,7 +351,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// This allows GL resources to be disposed from other threads, such as the finalizer.
         /// </summary>
         /// <param name="disposeAction">The action to execute for the dispose.</param>
-        static private void AddDisposeAction(Action disposeAction)
+        private void AddDisposeAction(Action disposeAction)
         {
             if (disposeAction == null)
                 throw new ArgumentNullException("disposeAction");

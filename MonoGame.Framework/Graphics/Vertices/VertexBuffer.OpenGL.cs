@@ -28,7 +28,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformConstruct()
         {
-            Threading.BlockOnUIThread(GenerateIfRequired);
+			GraphicsDevice.Threading.BlockOnUIThread(GenerateIfRequired);
         }
 
         private void PlatformGraphicsDeviceResetting()
@@ -64,13 +64,13 @@ namespace Microsoft.Xna.Framework.Graphics
             throw new NotSupportedException("Vertex buffers are write-only on OpenGL ES platforms");
 #endif
 #if !GLES
-            if (Threading.IsOnUIThread())
+			if (GraphicsDevice.Threading.IsOnUIThread())
             {
                 GetBufferData(offsetInBytes, data, startIndex, elementCount, vertexStride);
             }
             else
             {
-                Threading.BlockOnUIThread (() => GetBufferData(offsetInBytes, data, startIndex, elementCount, vertexStride));
+				GraphicsDevice.Threading.BlockOnUIThread(() => GetBufferData(offsetInBytes, data, startIndex, elementCount, vertexStride));
             }
 #endif
         }
@@ -126,13 +126,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformSetDataInternal<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride, SetDataOptions options, int bufferSize, int elementSizeInBytes) where T : struct
         {
-            if (Threading.IsOnUIThread())
+			if (GraphicsDevice.Threading.IsOnUIThread())
             {
                 SetBufferData(bufferSize, elementSizeInBytes, offsetInBytes, data, startIndex, elementCount, vertexStride, options);
             }
             else
             {
-                Threading.BlockOnUIThread(() => SetBufferData(bufferSize, elementSizeInBytes, offsetInBytes, data, startIndex, elementCount, vertexStride, options));
+				GraphicsDevice.Threading.BlockOnUIThread(() => SetBufferData(bufferSize, elementSizeInBytes, offsetInBytes, data, startIndex, elementCount, vertexStride, options));
             }
         }
 
@@ -168,7 +168,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             if (!IsDisposed)
             {
-                Threading.BlockOnUIThread(() =>
+				GraphicsDevice.Threading.BlockOnUIThread(() =>
                 {
                     GL.DeleteBuffers(1, ref vbo);
                     GraphicsExtensions.CheckGLError();

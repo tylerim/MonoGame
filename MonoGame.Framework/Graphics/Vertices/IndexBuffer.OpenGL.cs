@@ -27,7 +27,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformConstruct(IndexElementSize indexElementSize, int indexCount)
         {
-            Threading.BlockOnUIThread(GenerateIfRequired);
+			GraphicsDevice.Threading.BlockOnUIThread(GenerateIfRequired);
         }
 
         private void PlatformGraphicsDeviceResetting()
@@ -62,13 +62,13 @@ namespace Microsoft.Xna.Framework.Graphics
             throw new NotSupportedException("Index buffers are write-only on OpenGL ES platforms");
 #endif
 #if !GLES
-            if (Threading.IsOnUIThread())
+			if (GraphicsDevice.Threading.IsOnUIThread())
             {
                 GetBufferData(offsetInBytes, data, startIndex, elementCount);
             }
             else
             {
-                Threading.BlockOnUIThread(() => GetBufferData(offsetInBytes, data, startIndex, elementCount));
+				GraphicsDevice.Threading.BlockOnUIThread(() => GetBufferData(offsetInBytes, data, startIndex, elementCount));
             }
 #endif
         }
@@ -105,13 +105,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformSetDataInternal<T>(int offsetInBytes, T[] data, int startIndex, int elementCount, SetDataOptions options) where T : struct
         {
-            if (Threading.IsOnUIThread())
+			if (GraphicsDevice.Threading.IsOnUIThread())
             {
                 BufferData(offsetInBytes, data, startIndex, elementCount, options);
             }
             else
             {
-                Threading.BlockOnUIThread(() => BufferData(offsetInBytes, data, startIndex, elementCount, options));
+				GraphicsDevice.Threading.BlockOnUIThread(() => BufferData(offsetInBytes, data, startIndex, elementCount, options));
             }
         }
 
@@ -149,7 +149,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             if (!IsDisposed)
             {
-                Threading.BlockOnUIThread(() =>
+				GraphicsDevice.Threading.BlockOnUIThread(() =>
                 {
                     GL.DeleteBuffers(1, ref ibo);
                     GraphicsExtensions.CheckGLError();

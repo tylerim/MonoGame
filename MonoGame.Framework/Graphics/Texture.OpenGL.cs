@@ -44,7 +44,7 @@ namespace Microsoft.Xna.Framework.Graphics
             if (glTexture > 0)
             {
                 int texture = glTexture;
-                Threading.BlockOnUIThread(() =>
+                GraphicsDevice.Threading.BlockOnUIThread(() =>
                 {
                     GL.DeleteTextures(1, ref texture);
                     GraphicsExtensions.CheckGLError();

@@ -180,7 +180,8 @@ namespace Microsoft.Xna.Framework
 
         public override bool BeforeUpdate(GameTime gameTime)
         {
-            IsActive = _view.Window.Focused;
+			if (_view.Window != null)
+				IsActive = _view.Window.Focused;
 
             // Update our OpenAL sound buffer pools
             if (soundControllerInstance != null)
@@ -312,6 +313,7 @@ namespace Microsoft.Xna.Framework
                 }
 				
                 soundControllerInstance = null;
+	            Window = null;
             }
 
 			base.Dispose(disposing);
