@@ -75,6 +75,7 @@ namespace Microsoft.Xna.Framework.Graphics
         private float _lastClearDepth = 1.0f;
         private int _lastClearStencil = 0;
 
+        private GameWindow _window;
         internal void SetVertexAttributeArray(bool[] attrs)
         {
             for(int x = 0; x < attrs.Length; x++)
@@ -98,7 +99,12 @@ namespace Microsoft.Xna.Framework.Graphics
         {
 #if WINDOWS || LINUX || ANGLE
             GraphicsMode mode = GraphicsMode.Default;
-            var wnd = (Game.Instance.Window as OpenTKGameWindow).Window.WindowInfo;
+            var window = _window as OpenTKGameWindow;
+            if (window == null)
+                throw new InvalidOperationException("current game platform doesn't support this window type other than OpenTKGameWindow");
+
+	        var wnd = window.Window.WindowInfo;
+			Debug.Assert(wnd != null);
 
             #if GLES
             // Create an OpenGL ES 2.0 context
@@ -123,18 +129,7 @@ namespace Microsoft.Xna.Framework.Graphics
                     PresentationParameters.DepthStencilFormat == DepthFormat.Depth24Stencil8 ? 8 :
                     0;
 
-                var samples = 0;
-                if (Game.Instance.graphicsDeviceManager.PreferMultiSampling)
-                {
-                    // Use a default of 4x samples if PreferMultiSampling is enabled
-                    // without explicitly setting the desired MultiSampleCount.
-                    if (PresentationParameters.MultiSampleCount == 0)
-                    {
-                        PresentationParameters.MultiSampleCount = 4;
-                    }
-
-                    samples = PresentationParameters.MultiSampleCount;
-                }
+                var samples = PresentationParameters.MultiSampleCount;
 
                 mode = new GraphicsMode(color, depth, stencil, samples);
                 try
@@ -143,8 +138,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
                 catch (Exception e)
                 {
-                    Game.Instance.Log("Failed to create OpenGL context, retrying. Error: " +
-                        e.ToString());
                     major = 1;
                     minor = 0;
                     flags = GraphicsContextFlags.Default;
@@ -154,17 +147,6 @@ namespace Microsoft.Xna.Framework.Graphics
             Context.MakeCurrent(wnd);
             (Context as IGraphicsContextInternal).LoadAll();
             Context.SwapInterval = PresentationParameters.PresentationInterval.GetSwapInterval();
-
-            // Provide the graphics context for background loading
-            // Note: this context should use the same GraphicsMode,
-            // major, minor version and flags parameters as the main
-            // context. Otherwise, context sharing will very likely fail.
-            if (Threading.BackgroundContext == null)
-            {
-                Threading.BackgroundContext = new GraphicsContext(mode, wnd, major, minor, flags);
-                Threading.WindowInfo = wnd;
-                Threading.BackgroundContext.MakeCurrent(null);
-            }
             Context.MakeCurrent(wnd);
 #endif
 
@@ -335,13 +317,7 @@ namespace Microsoft.Xna.Framework.Graphics
 #if WINDOWS || LINUX || ANGLE
                 Context.Dispose();
                 Context = null;
-
-                if (Threading.BackgroundContext != null)
-                {
-                    Threading.BackgroundContext.Dispose();
-                    Threading.BackgroundContext = null;
-                    Threading.WindowInfo = null;
-                }
+                Threading.WindowInfo = null;
 #endif
             });
         }

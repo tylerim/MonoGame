@@ -16,11 +16,11 @@ namespace Microsoft.Xna.Framework.Graphics
             this.TextureCoordinate = textureCoordinate;
         }
 
-        VertexDeclaration IVertexType.VertexDeclaration
+        VertexDeclaration IVertexType.NewVertexDeclaration
         {
             get
             {
-                return VertexDeclaration;
+                return new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0), new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0), new VertexElement(0x18, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)); ;
             }
         }
         public override int GetHashCode()
@@ -55,13 +55,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 return false;
             }
             return (this == ((VertexPositionNormalTexture)obj));
-        }
-
-        static VertexPositionNormalTexture()
-        {
-            VertexElement[] elements = new VertexElement[] { new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0), new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0), new VertexElement(0x18, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0) };
-            VertexDeclaration declaration = new VertexDeclaration(elements);
-            VertexDeclaration = declaration;
         }
     }
 }

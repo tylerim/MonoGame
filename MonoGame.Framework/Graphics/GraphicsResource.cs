@@ -136,8 +136,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 // during their lifetime. But only one GraphicsDevice should retain ownership.
                 if (graphicsDevice != null)
                 {
-                    graphicsDevice.RemoveResourceReference(_selfReference);
-                    _selfReference = null;
+					Debug.Assert(false);
+                    throw new InvalidOperationException("graphics device is has already been set");
                 }
 
                 graphicsDevice = value;

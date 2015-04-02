@@ -346,14 +346,15 @@ namespace MonoGame.Tests.Visual
         {
             public Vector3 Normal;
             public Vector2 TextureCoordinate;
-
-            public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
-                new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
-                new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0));
-
-            VertexDeclaration IVertexType.VertexDeclaration
+			
+            VertexDeclaration IVertexType.NewVertexDeclaration
             {
-                get { return VertexDeclaration; }
+				get
+				{
+					return new VertexDeclaration(
+						new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
+						new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)); ;
+				}
             }
         }
 
@@ -381,7 +382,7 @@ namespace MonoGame.Tests.Visual
             Game.DrawWith += (sender, e) =>
             {
                 var vertexBuffer = new VertexBuffer(
-                    Game.GraphicsDevice, VertexTextureCoordinateTest.VertexDeclaration, 3,
+                    Game.GraphicsDevice, ((IVertexType)new VertexTextureCoordinateTest()).NewVertexDeclaration, 3,
                     BufferUsage.None);
                 Game.GraphicsDevice.SetVertexBuffer(vertexBuffer);
 

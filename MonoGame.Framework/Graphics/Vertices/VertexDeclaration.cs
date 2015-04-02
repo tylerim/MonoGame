@@ -82,7 +82,7 @@ namespace Microsoft.Xna.Framework.Graphics
 				throw new ArgumentException("vertexData does not inherit IVertexType");
 			}
 
-            var vertexDeclaration = type.VertexDeclaration;
+            var vertexDeclaration = type.NewVertexDeclaration;
 			if (vertexDeclaration == null)
 			{
 				throw new Exception("VertexDeclaration cannot be null");

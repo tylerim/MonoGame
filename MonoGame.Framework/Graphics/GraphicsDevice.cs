@@ -53,6 +53,8 @@ namespace Microsoft.Xna.Framework.Graphics
         private readonly RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
         private int _currentRenderTargetCount;
 
+		private Dictionary<Type, VertexDeclaration> _vertexDeclarationCache = new Dictionary<Type, VertexDeclaration>();
+
         internal GraphicsCapabilities GraphicsCapabilities { get; private set; }
 
         public TextureCollection VertexTextures { get; private set; }
@@ -189,16 +191,23 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <paramref name="presentationParameters"/> is <see langword="null"/>.
         /// </exception>
         public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
+			: this(adapter, graphicsProfile, presentationParameters, null)
         {
-            Adapter = adapter;
-            if (presentationParameters == null)
-                throw new ArgumentNullException("presentationParameters");
-            PresentationParameters = presentationParameters;
-            Setup();
-            GraphicsCapabilities = new GraphicsCapabilities(this);
-            GraphicsProfile = graphicsProfile;
-            Initialize();
         }
+
+		// Additional initialization for OpenGL
+		public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters, GameWindow window)
+		{
+			_window = window; 
+			Adapter = adapter;
+			if (presentationParameters == null)
+				throw new ArgumentNullException("presentationParameters");
+			PresentationParameters = presentationParameters;
+			Setup();
+			GraphicsCapabilities = new GraphicsCapabilities(this);
+			GraphicsProfile = graphicsProfile;
+			Initialize(); 
+		}
 
         private void Setup()
         {
@@ -826,10 +835,22 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void DrawUserPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount) where T : struct, IVertexType
         {
-            DrawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount, VertexDeclarationCache<T>.VertexDeclaration);
+			DrawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount, GetCacheVertexDeclaration<T>());
         }
 
-        public void DrawUserPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount, VertexDeclaration vertexDeclaration) where T : struct
+	    private VertexDeclaration GetCacheVertexDeclaration<T>() where T : struct, IVertexType
+	    {
+		    VertexDeclaration value;
+		    if (_vertexDeclarationCache.TryGetValue(typeof (T), out value))
+			    return value;
+		    
+			value = VertexDeclaration.FromType(typeof (T));
+		    _vertexDeclarationCache[typeof (T)] = value;
+		    
+			return value;
+	    }
+
+	    public void DrawUserPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount, VertexDeclaration vertexDeclaration) where T : struct
         {
             if (vertexData == null)
                 throw new ArgumentNullException("vertexData");
@@ -872,7 +893,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount) where T : struct, IVertexType
         {
-            DrawUserIndexedPrimitives<T>(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache<T>.VertexDeclaration);
+			DrawUserIndexedPrimitives<T>(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, GetCacheVertexDeclaration<T>());
         }
 
         public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration) where T : struct
@@ -912,7 +933,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount) where T : struct, IVertexType
         {
-            DrawUserIndexedPrimitives<T>(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache<T>.VertexDeclaration);
+            DrawUserIndexedPrimitives<T>(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, GetCacheVertexDeclaration<T>());
         }
 
         public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration) where T : struct

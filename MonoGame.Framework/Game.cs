@@ -53,13 +53,12 @@ namespace Microsoft.Xna.Framework
 
         private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
 
+	    public Func<bool> OnIdle;
 
         private bool _suppressDraw;
         
         public Game()
         {
-            _instance = this;
-
             LaunchParameters = new LaunchParameters();
             _services = new GameServiceContainer();
             _components = new GameComponentCollection();
@@ -143,7 +142,6 @@ namespace Microsoft.Xna.Framework
                 Activity = null;
 #endif
                 _isDisposed = true;
-                _instance = null;
             }
         }
 
@@ -166,9 +164,6 @@ namespace Microsoft.Xna.Framework
         [CLSCompliant(false)]
         public static AndroidGameActivity Activity { get; internal set; }
 #endif
-        private static Game _instance = null;
-        internal static Game Instance { get { return Game._instance; } }
-
         public LaunchParameters LaunchParameters { get; private set; }
 
         public GameComponentCollection Components

@@ -166,7 +166,7 @@ namespace MonoGame.Tests.Components {
 			cubeVertices [6].Color = Color.White;
 			cubeVertices [7].Color = Color.Cyan;
 
-			vertices = new VertexBuffer (GraphicsDevice, VertexPositionColor.VertexDeclaration, number_of_vertices, BufferUsage.WriteOnly);
+			vertices = new VertexBuffer (GraphicsDevice, ((IVertexType)new VertexPositionColor()).NewVertexDeclaration, number_of_vertices, BufferUsage.WriteOnly);
 			vertices.SetData<VertexPositionColor> (cubeVertices);
 		}
 

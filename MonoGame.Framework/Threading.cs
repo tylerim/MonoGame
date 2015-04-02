@@ -77,8 +77,8 @@ namespace Microsoft.Xna.Framework
 #elif IOS
         public static EAGLContext BackgroundContext;
 #elif WINDOWS || LINUX || ANGLE
-        public IGraphicsContext BackgroundContext;
         public IWindowInfo WindowInfo;
+        private SynchronizationContext _synchronizationContext;
 #endif
 
 #if !WINDOWS_PHONE
@@ -88,6 +88,7 @@ namespace Microsoft.Xna.Framework
             mainThreadId = Environment.CurrentManagedThreadId;
 #else
             mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            _synchronizationContext = SynchronizationContext.Current;
 #endif
         }
 #endif
@@ -192,18 +193,12 @@ namespace Microsoft.Xna.Framework
                 GraphicsExtensions.CheckGLError();
             }
 #elif WINDOWS || LINUX || ANGLE
-            lock (BackgroundContext)
+            _synchronizationContext.Send(delegate
             {
-                // Make the context current on this thread
-                BackgroundContext.MakeCurrent(WindowInfo);
                 // Execute the action
                 action();
-                // Must flush the GL calls so the texture is ready for the main context to use
-                GL.Flush();
                 GraphicsExtensions.CheckGLError();
-                // Must make the context not current on this thread or the next thread will get error 170 from the MakeCurrent call
-                BackgroundContext.MakeCurrent(null);
-            }
+            }, null);
 #elif WINDOWS_PHONE
             BlockOnContainerThread(Deployment.Current.Dispatcher, action);
 #else

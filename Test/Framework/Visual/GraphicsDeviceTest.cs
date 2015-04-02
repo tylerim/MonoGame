@@ -234,8 +234,8 @@ namespace MonoGame.Tests.Visual
                 Assert.DoesNotThrow(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty, 0, 1, VertexPositionColor.VertexDeclaration));
                 Assert.DoesNotThrow(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty.Select(x => (int) x).ToArray(), 0, 1, VertexPositionColor.VertexDeclaration));
 #else
-                Assert.Throws<ArgumentOutOfRangeException>(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty, 0, 1, VertexPositionColor.VertexDeclaration));
-                Assert.Throws<ArgumentOutOfRangeException>(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty.Select(x => (int) x).ToArray(), 0, 1, VertexPositionColor.VertexDeclaration));
+                Assert.Throws<ArgumentOutOfRangeException>(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty, 0, 1, ((IVertexType)new VertexPositionColor()).NewVertexDeclaration));
+                Assert.Throws<ArgumentOutOfRangeException>(() => Game.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexDataNonEmpty, 0, 3, indexDataNonEmpty.Select(x => (int)x).ToArray(), 0, 1, ((IVertexType)new VertexPositionColor()).NewVertexDeclaration));
 #endif
             };
             Game.Run();
@@ -296,12 +296,9 @@ namespace MonoGame.Tests.Visual
         {
             public Vector2 Position;
 
-            public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
-                new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0));
-
-            VertexDeclaration IVertexType.VertexDeclaration
+            VertexDeclaration IVertexType.NewVertexDeclaration
             {
-                get { return VertexDeclaration; }
+                get { return new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)); }
             }
         }
 

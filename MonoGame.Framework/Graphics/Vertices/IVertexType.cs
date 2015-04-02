@@ -2,7 +2,7 @@
 {
     public interface IVertexType
     {
-        VertexDeclaration VertexDeclaration
+        VertexDeclaration NewVertexDeclaration
         {
             get;
         }
