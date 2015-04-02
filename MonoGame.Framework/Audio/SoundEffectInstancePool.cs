@@ -134,28 +134,31 @@ namespace Microsoft.Xna.Framework.Audio
             OpenALSoundController.GetInstance.Update();
 #endif
 
-            SoundEffectInstance inst = null;
-            // Cleanup instances which have finished playing.                    
-            for (var x = 0; x < _playingInstances.Count;)
+            lock (_playingInstances)
             {
-                inst = _playingInstances[x];
-
-                if (inst.State == SoundState.Stopped || inst.IsDisposed || inst._effect == null)
+                SoundEffectInstance inst = null;
+                // Cleanup instances which have finished playing.                    
+                for (var x = 0; x < _playingInstances.Count;)
                 {
-                    Add(inst);
-                    continue;
-                }
-                else if (inst._effect.IsDisposed)
-                {
-                    Add(inst);
-                    // Instances created through SoundEffect.CreateInstance need to be disposed when
-                    // their owner SoundEffect is disposed.
-                    if (!inst._isPooled)
-                        inst.Dispose();
-                    continue;
-                }
+                    inst = _playingInstances[x];
 
-                x++;
+                    if (inst.State == SoundState.Stopped || inst.IsDisposed || inst._effect == null)
+                    {
+                        Add(inst);
+                        continue;
+                    }
+                    else if (inst._effect.IsDisposed)
+                    {
+                        Add(inst);
+                        // Instances created through SoundEffect.CreateInstance need to be disposed when
+                        // their owner SoundEffect is disposed.
+                        if (!inst._isPooled)
+                            inst.Dispose();
+                        continue;
+                    }
+
+                    x++;
+                }
             }
         }
 
