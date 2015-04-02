@@ -369,7 +369,12 @@ namespace Microsoft.Xna.Framework
             }
 
             // Needs to be before ApplyChanges()
+#if OPENGL
+            _graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, presentationParameters, _game.Window);
+#else
             _graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, presentationParameters);
+#endif
+
 
 #if !MONOMAC
             ApplyChanges();

@@ -325,7 +325,7 @@ namespace Microsoft.Xna.Framework
         {
             //There is a bug in OpenTK where the MouseLeave event is raised when the mouse button
             //is down while the cursor is still in the window bounds.
-            if (Mouse.GetState().LeftButton == ButtonState.Released)
+            if (Mouse.GetState(this).LeftButton == ButtonState.Released)
             {
                 _isMouseInBounds = false;
             }
