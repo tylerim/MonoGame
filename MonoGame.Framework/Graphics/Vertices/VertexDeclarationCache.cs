@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Xna.Framework.Graphics
+﻿using System;
+
+namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>
     /// Helper class which ensures we only lookup a vertex 
@@ -8,16 +10,13 @@
     internal class VertexDeclarationCache<T>
         where T : struct, IVertexType
     {
-        static private VertexDeclaration _cached;
+        static private Lazy<VertexDeclaration> _cached = new Lazy<VertexDeclaration>(() => VertexDeclaration.FromType(typeof(T)));
 
         static public VertexDeclaration VertexDeclaration
         {
             get
             {
-                if (_cached == null)
-                    _cached = VertexDeclaration.FromType(typeof(T));
-
-                return _cached;
+                return _cached.Value;
             }
         }
     }
