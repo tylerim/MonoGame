@@ -68,6 +68,7 @@ non-infringement.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -85,20 +86,23 @@ namespace Microsoft.Xna.Framework
     class OpenTKGamePlatform : GamePlatform
     {
         private OpenTKGameWindow _view;
-		private OpenALSoundController soundControllerInstance = null;
+        private OpenALSoundController soundControllerInstance = null;
         // stored the current screen state, so we can check if it has changed.
         private bool isCurrentlyFullScreen = false;
         private Toolkit toolkit;
+        private static int _toolkitReferenceCounter;
         private int isExiting; // int, so we can use Interlocked.Increment
         
-		public OpenTKGamePlatform(Game game)
+        public OpenTKGamePlatform(Game game)
             : base(game)
         {
             toolkit = Toolkit.Init();
+            Interlocked.Increment(ref _toolkitReferenceCounter);
+
             _view = new OpenTKGameWindow(game);
             this.Window = _view;
 
-			// Setup our OpenALSoundController to handle our SoundBuffer pools
+            // Setup our OpenALSoundController to handle our SoundBuffer pools
             try
             {
                 soundControllerInstance = OpenALSoundController.GetInstance;
@@ -135,6 +139,9 @@ namespace Microsoft.Xna.Framework
             while (true)
             {
                 _view.ProcessEvents();
+                
+                if (Game.OnIdle != null)
+                    Game.OnIdle();
 
                 // Stop the main loop iff Game.Exit() has been called.
                 // This can happen under the following circumstances:
@@ -180,8 +187,8 @@ namespace Microsoft.Xna.Framework
 
         public override bool BeforeUpdate(GameTime gameTime)
         {
-			if (_view.Window != null)
-				IsActive = _view.Window.Focused;
+            if (_view.Window != null)
+                IsActive = _view.Window.Focused;
 
             // Update our OpenAL sound buffer pools
             if (soundControllerInstance != null)
@@ -217,8 +224,8 @@ namespace Microsoft.Xna.Framework
             bool wasActive = IsActive;
             IsActive = false;
 
-            var graphicsDeviceManager = (GraphicsDeviceManager)
-                Game.Services.GetService(typeof(IGraphicsDeviceManager));
+	        var graphicsDeviceManager = Game.graphicsDeviceManager;
+			Debug.Assert(graphicsDeviceManager != null);
 
             if (graphicsDeviceManager.IsFullScreen)
             {
@@ -295,15 +302,18 @@ namespace Microsoft.Xna.Framework
             if (device != null)
                 device.Present();
         }
-		
+        
         protected override void Dispose(bool disposing)
         {
             if (!IsDisposed)
             {
                 if (toolkit != null)
                 {
-                    toolkit.Dispose();
-                    toolkit = null;
+                    if (Interlocked.Decrement(ref _toolkitReferenceCounter) == 0)
+                    {
+                        toolkit.Dispose();
+                        toolkit = null;
+                    }
                 }
 
                 if (_view != null)
@@ -311,13 +321,13 @@ namespace Microsoft.Xna.Framework
                     _view.Dispose();
                     _view = null;
                 }
-				
+                
                 soundControllerInstance = null;
-	            Window = null;
+                Window = null;
             }
 
-			base.Dispose(disposing);
+            base.Dispose(disposing);
         }
-			
+            
     }
 }
