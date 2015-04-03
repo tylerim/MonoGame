@@ -178,7 +178,10 @@ namespace Microsoft.Xna.Framework
 
         private void OpenTkGameWindow_Closing(object sender, CancelEventArgs e)
         {
-            Game.Exit();
+	        Game.OnClosing(sender, e);
+
+			if (e.Cancel == false)
+				Game.Exit();
         }
 
         private void Keyboard_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)

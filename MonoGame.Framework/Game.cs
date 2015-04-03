@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 #if WINRT
 using System.Threading.Tasks;
@@ -1032,6 +1033,12 @@ namespace Microsoft.Xna.Framework
                 return object.Equals(Item, ((AddJournalEntry<T>)obj).Item);
             }
         }
+
+	    public EventHandler<CancelEventArgs> Closing;
+	    public void OnClosing(object sender, CancelEventArgs cancelEventArgs)
+	    {
+		    Closing(sender, cancelEventArgs);
+	    }
     }
 
     public enum GameRunBehavior
