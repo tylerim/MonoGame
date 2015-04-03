@@ -132,8 +132,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 if (graphicsDevice == value)
                     return;
 
-                // VertexDeclaration objects can be bound to multiple GraphicsDevice objects
-                // during their lifetime. But only one GraphicsDevice should retain ownership.
                 if (graphicsDevice != null)
                 {
 					Debug.Assert(false);

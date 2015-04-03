@@ -42,8 +42,8 @@ namespace Microsoft.Xna.Framework.Graphics
         private DrawBuffersEnum[] _drawBuffers;
 #endif
 
-        static List<Action> disposeActions = new List<Action>();
-        static object disposeActionsLock = new object();
+        List<Action> disposeActions = new List<Action>();
+        object disposeActionsLock = new object();
 
 	    private Threading _threading = new Threading();
 	    internal Threading Threading
@@ -55,9 +55,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private ShaderProgram _shaderProgram = null;
 
-        static readonly float[] _posFixup = new float[4];
+        readonly float[] _posFixup = new float[4];
 
-        internal static readonly List<int> _enabledVertexAttributes = new List<int>();
+        internal readonly List<int> _enabledVertexAttributes = new List<int>();
 
         internal FramebufferHelper framebufferHelper;
 
@@ -317,7 +317,6 @@ namespace Microsoft.Xna.Framework.Graphics
 #if WINDOWS || LINUX || ANGLE
                 Context.Dispose();
                 Context = null;
-                Threading.WindowInfo = null;
 #endif
             });
         }

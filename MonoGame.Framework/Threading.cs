@@ -77,7 +77,6 @@ namespace Microsoft.Xna.Framework
 #elif IOS
         public static EAGLContext BackgroundContext;
 #elif WINDOWS || LINUX || ANGLE
-        public IWindowInfo WindowInfo;
         private SynchronizationContext _synchronizationContext;
 #endif
 

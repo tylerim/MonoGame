@@ -346,7 +346,7 @@ namespace Microsoft.Xna.Framework
             _init = false;
 #endif
 
-            GraphicsContext.ShareContexts = true;
+            GraphicsContext.ShareContexts = false;
 
             window = new NativeWindow();
             window.Closing += new EventHandler<CancelEventArgs>(OpenTkGameWindow_Closing);
