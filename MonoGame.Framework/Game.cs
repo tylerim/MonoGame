@@ -1037,7 +1037,8 @@ namespace Microsoft.Xna.Framework
 	    public EventHandler<CancelEventArgs> Closing;
 	    public void OnClosing(object sender, CancelEventArgs cancelEventArgs)
 	    {
-		    Closing(sender, cancelEventArgs);
+			if (Closing != null)
+				Closing(sender, cancelEventArgs);
 	    }
     }
 

@@ -42,13 +42,18 @@ purpose and non-infringement.
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OpenTK;
 using OpenTK.Graphics;
-
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using KeyPressEventArgs = OpenTK.KeyPressEventArgs;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
+using NativeWindow = OpenTK.NativeWindow;
 
 #endregion Using Statements
 
@@ -367,9 +372,8 @@ namespace Microsoft.Xna.Framework
             window.KeyPress += OnKeyPress;
 
             // Set the window icon.
-            var assembly = Assembly.GetEntryAssembly();
-            if(assembly != null)
-                window.Icon = Icon.ExtractAssociatedIcon(assembly.Location);
+			window.Icon = new Icon("icon.ico");
+
             Title = MonoGame.Utilities.AssemblyHelper.GetDefaultWindowTitle();
 
             updateClientBounds = false;
